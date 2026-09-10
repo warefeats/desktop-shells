@@ -148,6 +148,11 @@ fn push_raw_start(channel: Channel<InvokeResponseBody>, rate: u32, size: usize, 
 
 fn main() {
     let started = Instant::now();
+    {
+        let mut out = std::io::stdout().lock();
+        let _ = writeln!(out, "HOST_START {}", now_ms());
+        let _ = out.flush();
+    }
     let mode = std::env::var("BENCH_MODE").unwrap_or_else(|_| "start".into());
     let params = std::env::var("BENCH_PARAMS")
         .ok()

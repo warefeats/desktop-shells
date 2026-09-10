@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const started = performance.now();
+process.stdout.write(`HOST_START ${Date.now()}\n`);
 const mode = process.env.BENCH_MODE ?? "start";
 let params = {};
 try { params = JSON.parse(process.env.BENCH_PARAMS ?? "{}"); } catch {}

@@ -10,7 +10,7 @@ import { nextFrame } from "./stats";
 const stage = document.getElementById("stage")!;
 const statusEl = document.getElementById("status")!;
 let logger: ((m: string) => void) | undefined;
-const setStatus = (s: string) => { statusEl.textContent = s; console.log(`status: ${s}`); logger?.(`status: ${s}`); };
+const setStatus = (s: string) => { statusEl.textContent = s; document.title = `desktop-shells: ${s}`; console.log(`status: ${s}`); logger?.(`status: ${s}`); };
 window.addEventListener("error", (e) => logger?.(`error: ${e.message} ${e.filename}:${e.lineno}`));
 window.addEventListener("unhandledrejection", (e) => logger?.(`unhandledrejection: ${String((e.reason && e.reason.stack) || e.reason)}`));
 
@@ -53,4 +53,5 @@ async function main() {
   await b.quit();
 }
 
+window.addEventListener("error", (e) => { document.title = `desktop-shells: error ${e.message}`; });
 main().catch((e) => { setStatus(`fatal: ${e}`); console.error(e); });
