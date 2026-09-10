@@ -1,0 +1,16 @@
+appId: com.warefeats.desktop-shells
+productName: desktop-shells-electron
+directories:
+  output: out
+files:
+  - main.mjs
+  - preload.cjs
+  - package.json
+extraResources:
+  - from: ../../frontend/dist
+    to: frontend
+mac:
+  target: [dmg]
+  identity: null
+win:
+  target: [nsis]

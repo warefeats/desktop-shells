@@ -1,0 +1,16 @@
+{
+  "name": "desktop-shells-electron",
+  "version": "0.1.0",
+  "private": true,
+  "description": "warefeats desktop-shells Electron host",
+  "author": "warefeats",
+  "main": "main.mjs",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "26.15.3"
+  }
+}

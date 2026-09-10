@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' ipc: http://ipc.localhost; style-src 'self' 'unsafe-inline'">
+<title>desktop-shells</title>
+<style>
+  html, body { margin: 0; background: #111; color: #ddd; font: 13px/1.4 ui-monospace, Menlo, monospace; overflow: hidden; }
+  #stage { position: relative; width: 1280px; height: 720px; }
+  #table { position: absolute; inset: 0; overflow-y: scroll; }
+  #table .spacer { position: relative; }
+  #table .row { position: absolute; left: 0; right: 0; height: 24px; display: grid; grid-template-columns: 90px 120px 120px 120px 1fr 80px; padding: 0 8px; border-bottom: 1px solid #222; box-sizing: border-box; }
+  #table .row:nth-child(odd) { background: #161616; }
+  canvas { position: absolute; inset: 0; }
+  #status { position: absolute; left: 8px; bottom: 8px; color: #888; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="status">starting</div>
+<script src="./main.js"></script>
+</body>
+</html>

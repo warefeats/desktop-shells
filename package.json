@@ -1,0 +1,20 @@
+{
+  "name": "desktop-shells",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.0",
+  "scripts": {
+    "build:frontend": "bun run frontend/build.ts",
+    "bench": "bun run src/run.ts",
+    "smoke": "bun run src/run.ts --smoke",
+    "gate": "bun run src/run.ts --gate-only",
+    "import": "bun run src/import.ts",
+    "check": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "1.2.21",
+    "typescript": "5.9.2"
+  }
+}
