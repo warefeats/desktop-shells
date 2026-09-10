@@ -13,8 +13,33 @@ export interface CellResult {
   actualBytes: number;
   rows?: number;
   warmups: number;
+  /** Round trips timed together per sample; samples are divided by it. */
+  batch: number;
   samplesMs: number[];
   summary: Summary;
+}
+
+/** Smallest non-zero step performance.now() reports, in ms. WKWebView coarsens to 1 ms. */
+export function timerResolutionMs(): number {
+  let min = Infinity;
+  for (let i = 0; i < 2000; i++) {
+    const a = performance.now();
+    let b = performance.now();
+    while (b === a) b = performance.now();
+    if (b - a < min) min = b - a;
+  }
+  return min;
+}
+
+/** Enough round trips per sample that one sample spans at least 50 timer ticks. */
+function batchFor(oneMs: number, resolution: number): number {
+  return Math.max(1, Math.min(200, Math.ceil((resolution * 50) / Math.max(oneMs, 1e-6))));
+}
+
+async function timeBatch(fn: () => Promise<void>, batch: number): Promise<number> {
+  const t0 = performance.now();
+  for (let i = 0; i < batch; i++) await fn();
+  return (performance.now() - t0) / batch;
 }
 
 export interface PushResult {
@@ -31,6 +56,7 @@ export interface PushResult {
 export interface IpcParams { warmups: number; iterations: number; pushRate: number; pushSize: number; pushSeconds: number }
 
 export async function runIpc(b: Bridge, p: IpcParams, status: (s: string) => void) {
+  const resolution = timerResolutionMs();
   const cells: CellResult[] = [];
   for (const target of PAYLOAD_BYTES) {
     // idiomatic
@@ -38,28 +64,34 @@ export async function runIpc(b: Bridge, p: IpcParams, status: (s: string) => voi
     const payload = rows(SEED, n);
     const actual = new TextEncoder().encode(JSON.stringify(payload)).byteLength;
     status(`ipc idiomatic ${target} (${n} rows, ${actual} B)`);
+    const once = async () => {
+      const back = await b.rows(payload);
+      if (back.length !== payload.length) throw new Error(`rows length mismatch ${back.length} vs ${payload.length}`);
+    };
+    const probe = await timeBatch(once, 5);
+    const batch = batchFor(probe, resolution);
     const samples: number[] = [];
     for (let i = 0; i < p.warmups + p.iterations; i++) {
-      const t0 = performance.now();
-      const back = await b.rows(payload);
-      const t1 = performance.now();
-      if (back.length !== payload.length) throw new Error(`rows length mismatch ${back.length} vs ${payload.length}`);
-      if (i >= p.warmups) samples.push(t1 - t0);
+      const t = await timeBatch(once, batch);
+      if (i >= p.warmups) samples.push(t);
     }
-    cells.push({ path: "idiomatic", targetBytes: target, actualBytes: actual, rows: n, warmups: p.warmups, samplesMs: samples, summary: summarize(samples) });
+    cells.push({ path: "idiomatic", targetBytes: target, actualBytes: actual, rows: n, warmups: p.warmups, batch, samplesMs: samples, summary: summarize(samples) });
 
     // raw
     const data = bytes(SEED, target);
     status(`ipc raw ${target}`);
+    const onceRaw = async () => {
+      const back = await b.bytes(data);
+      if (back.byteLength !== data.byteLength) throw new Error(`bytes length mismatch ${back.byteLength} vs ${data.byteLength}`);
+    };
+    const rprobe = await timeBatch(onceRaw, 5);
+    const rbatch = batchFor(rprobe, resolution);
     const rsamples: number[] = [];
     for (let i = 0; i < p.warmups + p.iterations; i++) {
-      const t0 = performance.now();
-      const back = await b.bytes(data);
-      const t1 = performance.now();
-      if (back.byteLength !== data.byteLength) throw new Error(`bytes length mismatch ${back.byteLength} vs ${data.byteLength}`);
-      if (i >= p.warmups) rsamples.push(t1 - t0);
+      const t = await timeBatch(onceRaw, rbatch);
+      if (i >= p.warmups) rsamples.push(t);
     }
-    cells.push({ path: "raw", targetBytes: target, actualBytes: target, warmups: p.warmups, samplesMs: rsamples, summary: summarize(rsamples) });
+    cells.push({ path: "raw", targetBytes: target, actualBytes: target, warmups: p.warmups, batch: rbatch, samplesMs: rsamples, summary: summarize(rsamples) });
   }
 
   const pushes: PushResult[] = [];
@@ -89,5 +121,5 @@ export async function runIpc(b: Bridge, p: IpcParams, status: (s: string) => voi
     });
     if (outOfOrder) console.warn(`${path} push: ${outOfOrder} out-of-order events`);
   }
-  return { cells, pushes };
+  return { timerResolutionMs: resolution, cells, pushes };
 }

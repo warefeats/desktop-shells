@@ -13,6 +13,8 @@ export interface FrameResult {
   jankPct: number;
   samplesMs: number[];
   summary: Summary;
+  /** Main-thread time inside the test's step per frame, which vsync cannot hide. */
+  stepMs: Summary;
 }
 
 export interface ParityParams { warmupFrames: number; frames: number }
@@ -31,19 +33,22 @@ export async function detectRefreshHz(): Promise<number> {
 async function measure(test: FrameResult["test"], p: ParityParams, refreshHz: number, step: (frame: number) => void): Promise<FrameResult> {
   const interval = 1000 / refreshHz;
   const samples: number[] = [];
+  const steps: number[] = [];
   let prev = await nextFrame();
   for (let i = 0; i < p.warmupFrames + p.frames; i++) {
+    const s0 = performance.now();
     step(i);
+    const s1 = performance.now();
     const t = await nextFrame();
-    if (i >= p.warmupFrames) samples.push(t - prev);
+    if (i >= p.warmupFrames) { samples.push(t - prev); steps.push(s1 - s0); }
     prev = t;
   }
   const jank = samples.filter((s) => s > interval * 1.5).length;
-  return { test, warmupFrames: p.warmupFrames, frames: p.frames, refreshHz, refreshIntervalMs: interval, jankFrames: jank, jankPct: (100 * jank) / samples.length, samplesMs: samples, summary: summarize(samples) };
+  return { test, warmupFrames: p.warmupFrames, frames: p.frames, refreshHz, refreshIntervalMs: interval, jankFrames: jank, jankPct: (100 * jank) / samples.length, samplesMs: samples, summary: summarize(samples), stepMs: summarize(steps) };
 }
 
 export function mountTable(stage: HTMLElement): { step: (f: number) => void; unmount: () => void } {
-  const ROWS = 100_000, ROW_H = 24;
+  const ROWS = 100_000, ROW_H = 12;
   const data = rows(7, ROWS);
   const el = document.createElement("div");
   el.id = "table";
@@ -77,12 +82,12 @@ export function mountTable(stage: HTMLElement): { step: (f: number) => void; unm
       (cells[5] as HTMLElement).textContent = d.nested.b ? d.nested.c : String(d.nested.a);
     }
   };
-  // Scroll 5 rows per frame; wraps well inside 100k rows for 600+ frames.
-  return { step: (f) => { const top = (f * ROW_H * 5) % (ROWS * ROW_H - H); el.scrollTop = top; render(top); }, unmount: () => el.remove() };
+  // Scroll 40 rows per frame; 100k rows wrap after 2,500 frames, past any pass.
+  return { step: (f) => { const top = (f * ROW_H * 40) % (ROWS * ROW_H - H); el.scrollTop = top; render(top); }, unmount: () => el.remove() };
 }
 
 export function mountParticles(stage: HTMLElement): { step: (f: number) => void; unmount: () => void } {
-  const N = 20_000;
+  const N = 100_000;
   const c = document.createElement("canvas");
   c.width = W; c.height = H;
   stage.appendChild(c);
@@ -114,7 +119,7 @@ float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
 float noise(vec2 p){ vec2 i=floor(p), f=fract(p); vec2 u=f*f*(3.-2.*f);
   return mix(mix(hash(i),hash(i+vec2(1,0)),u.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x), u.y); }
 void main(){ vec2 uv = gl_FragCoord.xy / res; float v = 0.; float a = .5; vec2 q = uv*6. + t*.1;
-  for(int i=0;i<8;i++){ v += a*noise(q); q = q*2.03 + vec2(1.7,9.2); a*=.5; }
+  for(int i=0;i<16;i++){ v += a*noise(q); q = q*2.03 + vec2(1.7,9.2); a*=.5; }
   o = vec4(v*.9, v*.7, v*.4, 1.); }`;
 
 export function mountRaster(stage: HTMLElement): { step: (f: number) => void; unmount: () => void; renderer: string } {

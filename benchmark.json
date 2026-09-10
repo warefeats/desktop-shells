@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "desktop-shells-2026-09",
+  "slug": "desktop-shells",
+  "category": "Desktop",
+  "title": "Tauri vs Electron",
+  "deck": "One byte-identical web frontend embedded in a Tauri host and an Electron host, measured where teams actually argue: moving data across the webview boundary at four payload sizes on each shell's idiomatic path and its raw path, the same frontend in three webviews, cold and warm starts on one clock, memory after ten minutes of work attributed to every helper process, and the installers as built. Two rigs, one per operating system. The runner's public; check my numbers.",
+  "unit": "ms",
+  "lowerIsBetter": true,
+  "verdict": {
+    "winnerId": "",
+    "headline": "",
+    "summary": ""
+  },
+  "trademarks": [
+    "Tauri is a trademark of the Tauri Programme within The Commons Conservancy; the tauri crates and CLI are MIT or Apache-2.0.",
+    "Electron is a trademark of the OpenJS Foundation; Electron is MIT-licensed. Chromium is a Google project, BSD-3-Clause."
+  ],
+  "limitations": [
+    "Two operating systems, one machine each, and no Linux: Tauri's webkit2gtk leg is the one most often complained about and it is not here yet.",
+    "Start is the launch command to the frontend's first animation frame on one wall clock, not click to pixel; screen capture on both rigs is future work.",
+    "Frame time is vsync-capped inside every webview, so the parity charts read from the tail and from main-thread step time, not from the mean.",
+    "Both shells are built with their scaffolded defaults, unsigned, secure defaults on; nothing is tuned for size or speed on either side.",
+    "The Tauri candidate's webview is the operating system's and changes without a rebuild; the version measured is in each run file.",
+    "Memory is attributed by responsible process on macOS and by process tree on Windows; those are different statistics and are never compared across rigs.",
+    "The Windows leg runs in a logged-on interactive desktop session reached through a scheduled task, because desktop shells cannot run headless."
+  ],
+  "runs": []
+}
