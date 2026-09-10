@@ -47,7 +47,7 @@ const results: Results = existsSync(outPath) && !gateOnly && args.has("--resume"
   ? JSON.parse(readFileSync(outPath, "utf8"))
   : {
       schemaVersion: 1, startedAt: new Date().toISOString(), smoke, rig: os.rig(),
-      protocol: { ...PROTOCOL, attributionRule: os.attribution.rule, purge: "ok", launcher: os.platform === "darwin" ? "open -n -W (LaunchServices), app is its own responsible process" : "direct spawn, WebView2 and Electron helpers are children" },
+      protocol: { ...PROTOCOL, attributionRule: os.attribution.rule, purge: "ok", launcher: os.platform === "darwin" ? "open -n -W (LaunchServices), app is its own responsible process" : "direct spawn in the interactive session with --disable-features=CalculateNativeWinOcclusion passed to both shells (argv for Electron, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS for WebView2); WebView2 and Electron helpers are children" },
       candidates: cands.map(({ id, name, version, homepage, color }) => ({ id, name, version, homepage, color })),
       gate: {}, cold: empty(), warm: empty(), ipc: empty(), parity: empty(), soak: empty(),
       size: {} as Results["size"], notes: [],

@@ -168,8 +168,14 @@ const win32: Adapter = {
   async launch(c, env, stdoutPath, timeoutMs) {
     const { openSync, closeSync } = await import("node:fs");
     const fd = openSync(stdoutPath, "w");
+    // In a desktop session driven from a scheduled task, Chromium's native
+    // window occlusion tracker decides the window is hidden and stops
+    // animation frames; Electron never reaches its first frame while WebView2
+    // does. Both shells get the same switch so neither is treated differently:
+    // Electron reads it from argv, WebView2 from this environment variable.
+    const occlusion = "--disable-features=CalculateNativeWinOcclusion";
     const spawnedAtMs = Date.now();
-    const child = spawn(c.appPath, [], { env: { ...process.env, ...env }, stdio: ["ignore", fd, fd] });
+    const child = spawn(c.appPath, [occlusion], { env: { ...process.env, ...env, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: occlusion }, stdio: ["ignore", fd, fd] });
     const exited = new Promise<void>((res, rej) => {
       const timer = setTimeout(() => { rej(new Error(`${c.id} did not exit within ${timeoutMs} ms`)); child.kill(); }, timeoutMs);
       child.on("exit", () => { clearTimeout(timer); closeSync(fd); res(); });
