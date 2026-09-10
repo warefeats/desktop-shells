@@ -8,6 +8,6 @@ cargo tauri build
 Pop-Location
 Push-Location hosts\electron
 bun install --frozen-lockfile
-.\node_modules\.bin\electron-builder.cmd --win nsis
+bunx electron-builder --win nsis
 Pop-Location
 Write-Host "build done"
