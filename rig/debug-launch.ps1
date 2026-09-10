@@ -10,7 +10,8 @@ foreach ($c in @(
   $env:BENCH_OUT = "$root\results\debug-$($c.id).json"
   $p = Start-Process -FilePath $c.exe -PassThru -RedirectStandardOutput "$root\results\debug-$($c.id)-out.log" -RedirectStandardError "$root\results\debug-$($c.id)-err.log"
   Write-Output "=== $($c.id) pid $($p.Id)"
-  Start-Sleep -Seconds (if ($c.id -eq "electron") { 40 } else { 12 })
+  $wait = 12; if ($c.id -eq "electron") { $wait = 40 }
+  Start-Sleep -Seconds $wait
   $alive = Get-Process -Id $p.Id -ErrorAction SilentlyContinue
   Write-Output ("alive: " + [bool]$alive + " title: '" + $alive.MainWindowTitle + "'")
   if ($c.id -eq "tauri") {
