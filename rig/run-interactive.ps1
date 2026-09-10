@@ -2,7 +2,8 @@
 # session 0 where no window can be shown; a scheduled task registered to run
 # interactively as the logged-on user gets the real desktop and GPU. Blocks
 # until the task finishes, then prints its log.
-param([string]$Args = "--smoke", [string]$Script = "")
+# Not $Args: that is PowerShell's automatic variable and a parameter of that name is silently empty.
+param([string]$HarnessArgs = "--smoke", [string]$Script = "")
 $ErrorActionPreference = "Stop"
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 $root = Resolve-Path "$PSScriptRoot\.."
@@ -10,7 +11,7 @@ $log = Join-Path $root "results\interactive.log"
 New-Item -ItemType Directory -Force -Path (Join-Path $root "results") | Out-Null
 if (Test-Path $log) { Remove-Item $log }
 $bun = (Get-Command bun).Source
-$cmd = if ($Script) { "Set-Location '$root'; & '$Script' *> '$log'" } else { "Set-Location '$root'; & '$bun' run src/run.ts $Args *> '$log'" }
+$cmd = if ($Script) { "Set-Location '$root'; & '$Script' *> '$log'" } else { "Set-Location '$root'; & '$bun' run src/run.ts $HarnessArgs *> '$log'" }
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -Command `"$cmd`""
 $user = (Get-CimInstance Win32_ComputerSystem).UserName
 if (-not $user) { throw "no user is logged on to the desktop; autologon is required (ADR 0004)" }

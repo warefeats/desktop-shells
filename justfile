@@ -51,10 +51,10 @@ rig-build:
 
 # Runs in the logged-on desktop session via a scheduled task (ADR 0004); ssh itself is session 0.
 rig-smoke *ARGS:
-    ssh {{rig}} "Set-Location '{{rig_dir}}'; powershell -NoProfile -ExecutionPolicy Bypass -File rig/run-interactive.ps1 -Args '--smoke {{ARGS}}'"
+    ssh {{rig}} "Set-Location '{{rig_dir}}'; powershell -NoProfile -ExecutionPolicy Bypass -File rig/run-interactive.ps1 -HarnessArgs '--smoke {{ARGS}}'"
 
 rig-bench *ARGS:
-    ssh {{rig}} "Set-Location '{{rig_dir}}'; powershell -NoProfile -ExecutionPolicy Bypass -File rig/run-interactive.ps1 -Args '{{ARGS}}'"
+    ssh {{rig}} "Set-Location '{{rig_dir}}'; powershell -NoProfile -ExecutionPolicy Bypass -File rig/run-interactive.ps1 -HarnessArgs '{{ARGS}}'"
 
 rig-pull:
     scp {{rig}}:{{rig_dir}}/results.json ./results.json
