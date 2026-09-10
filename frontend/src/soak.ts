@@ -4,7 +4,7 @@
 import type { Bridge } from "./bridge";
 import { mountParticles, mountRaster, mountTable } from "./parity";
 import { rows, rowsForBytes } from "./payload";
-import { nextFrame } from "./stats";
+import { nextFrame, sleep } from "./stats";
 import { SEED } from "./ipc";
 
 export interface SoakParams { seconds: number; segmentSeconds: number; ipcEverySeconds: number }
@@ -21,7 +21,8 @@ export async function runSoak(b: Bridge, stage: HTMLElement, p: SoakParams, stat
     let f = 0;
     while (performance.now() - segStart < p.segmentSeconds * 1000 && performance.now() - start < p.seconds * 1000) {
       m.step(f++); frames++;
-      await nextFrame();
+      // A covered window stops animation frames; the soak must still end on time.
+      await Promise.race([nextFrame(), sleep(100)]);
       if (performance.now() - lastIpc >= p.ipcEverySeconds * 1000) {
         lastIpc = performance.now();
         await b.rows(payload); roundTrips++;

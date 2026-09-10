@@ -198,7 +198,7 @@ async function main() {
       const samples: SoakSample[] = [];
       const t0 = Date.now();
       let stop = false;
-      const r = await runMode(c, "soak", { seconds: PROTOCOL.soakSeconds, segmentSeconds: PROTOCOL.soakSegmentSeconds, ipcEverySeconds: PROTOCOL.soakIpcEverySeconds }, async (pid) => {
+      const r = await attempt(`soak ${p} ${c.id}`, () => runMode(c, "soak", { seconds: PROTOCOL.soakSeconds, segmentSeconds: PROTOCOL.soakSegmentSeconds, ipcEverySeconds: PROTOCOL.soakIpcEverySeconds }, async (pid) => {
         while (!stop) {
           const s = await os.attribution.sample(pid);
           if (s.bytes > 0) samples.push({ tMs: Date.now() - t0, bytes: s.bytes, processes: s.processes });
@@ -206,7 +206,7 @@ async function main() {
           // Stop when the process is gone.
           try { process.kill(pid, 0); } catch { stop = true; }
         }
-      });
+      }));
       stop = true;
       results.soak[c.id].push({ samples, report: r.report.result });
       const bytes = samples.map((s) => s.bytes);
