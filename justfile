@@ -39,7 +39,7 @@ rig-push:
     #!/usr/bin/env bash
     set -euo pipefail
     tmp=$(mktemp -t ds-push.XXXXXX.tgz)
-    git ls-files -z | tar czf "$tmp" --null -T -
+    COPYFILE_DISABLE=1 git ls-files -z | COPYFILE_DISABLE=1 tar czf "$tmp" --null -T -
     ssh {{rig}} "New-Item -ItemType Directory -Force -Path '{{rig_dir}}' | Out-Null"
     scp -q "$tmp" {{rig}}:{{rig_dir}}/push.tgz
     ssh {{rig}} "Set-Location '{{rig_dir}}'; tar -xzf push.tgz; Remove-Item push.tgz"
