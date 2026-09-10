@@ -91,6 +91,12 @@ function* interleaved(passes: number): Generator<[number, Candidate]> {
 const want = (phase: NonNullable<typeof only>[number]) => !only || only.includes(phase);
 
 async function main() {
+  if (process.platform === "darwin") {
+    // Keep the display and system awake for the harness's lifetime: a slept
+    // display stops animation frames in every webview and hangs a pass.
+    const { spawn } = await import("node:child_process");
+    spawn("caffeinate", ["-dis", "-w", String(process.pid)], { stdio: "ignore", detached: true }).unref();
+  }
   log(`rig: ${JSON.stringify(results.rig)}`);
   log(`candidates: ${cands.map((c) => `${c.id}@${c.version}`).join(", ")}`);
 
