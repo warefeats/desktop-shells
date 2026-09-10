@@ -8,22 +8,28 @@
   "unit": "ms",
   "lowerIsBetter": true,
   "verdict": {
-    "winnerId": "",
-    "headline": "",
-    "summary": ""
+    "winnerId": "tauri",
+    "headline": "Tauri moved JSON across the boundary 1.44 times faster than Electron over 1 KB, 64 KB, 1 MB, 16 MB (geometric mean of medians) on the M2 Max; on the Windows rig the same sweep went to Electron by 1.81",
+    "summary": "The IPC headline is the geometric mean over the four idiomatic JSON payload sizes, a rule fixed before any data existed. On macOS Tauri wins every size from 64 KB up and Electron wins the 1 KB cell, where a Tauri round trip costs about 0.2 ms to Electron's 0.09; on Windows Electron wins every idiomatic cell but 16 MB, and Tauri's raw bytes path through WebView2 is about five times slower than Electron's, the reverse of macOS. The same frontend spends less main-thread time per frame in WKWebView and WebView2 than in Electron's Chromium, most of it in the Canvas 2D particles test, while the WebGL2 raster and the virtualized table are within a frame of each other everywhere. Cold starts with the file cache purged are a tie on the Mac at about 1.1 s; warm starts are a tie there and Electron's by 190 to 356 ms on Windows, where no purge was available so its cold row is not cold. Memory flips by platform: over ten minutes of work Electron averaged 349 MB to Tauri's 561 MB on macOS, where WKWebView's content process climbed past 2 GB at the end of table segments, while on Windows Tauri averaged 232 MB to Electron's 241. Installers are 2.5 and 1.8 MB for Tauri against 121 and 106 MB for Electron. The scorecards below carry the section means; the limitations say what these numbers do not mean."
   },
   "trademarks": [
     "Tauri is a trademark of the Tauri Programme within The Commons Conservancy; the tauri crates and CLI are MIT or Apache-2.0.",
     "Electron is a trademark of the OpenJS Foundation; Electron is MIT-licensed. Chromium is a Google project, BSD-3-Clause."
   ],
   "limitations": [
+    "Windows cold starts are not cold: no file-cache purge was available on that rig, so its cold row is a launch after a settle, and the Windows lifecycle verdict reads warm start against warm start.",
     "Two operating systems, one machine each, and no Linux: Tauri's webkit2gtk leg is the one most often complained about and it is not here yet.",
     "Start is the launch command to the frontend's first animation frame on one wall clock, not click to pixel; screen capture on both rigs is future work.",
     "Frame time is vsync-capped inside every webview, so the parity charts read from the tail and from main-thread step time, not from the mean.",
     "Both shells are built with their scaffolded defaults, unsigned, secure defaults on; nothing is tuned for size or speed on either side.",
     "The Tauri candidate's webview is the operating system's and changes without a rebuild; the version measured is in each run file.",
     "Memory is attributed by responsible process on macOS and by process tree on Windows; those are different statistics and are never compared across rigs.",
-    "The Windows leg runs in a logged-on interactive desktop session reached through a scheduled task, because desktop shells cannot run headless."
+    "The Windows leg runs in a logged-on interactive desktop session reached through a scheduled task, because desktop shells cannot run headless.",
+    "On the M2 Max the cold, warm and IPC passes and the first parity passes ran before the harness disabled Chromium's occluded-window backgrounding; one Electron and one Tauri parity pass hung under a covering window and were discarded, and every remaining pass ran with the switches. The run file's notes carry the exact sequence.",
+    "Tauri's raw bytes path on Windows is measured as WebView2 delivers it; nothing was done to find out why it is five times slower there than on macOS, and that is a finding, not a fault in the runner."
   ],
-  "runs": []
+  "runs": [
+    "runs/2026-09-10-m2max.json",
+    "runs/2026-09-10-radeon-680m-win11.json"
+  ]
 }
