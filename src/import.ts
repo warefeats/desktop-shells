@@ -1,5 +1,7 @@
 // results.json -> runs/<date>-<rig>.json, registered in benchmark.json.
-// Four sections. The section series the site charts are: IPC = idiomatic 1 MB
+// Four sections. Section winners are ranked by the mean of the charted series,
+// which is what the site's scorecard shows; the IPC headline alone follows ADR 0002.
+// The section series the site charts are: IPC = idiomatic 1 MB
 // round trip; Parity = main-thread step time per frame pooled over the three
 // tests; Lifecycle = cold start; Size = installer bytes. The verdict rule for
 // the headline is ADR 0002 and is computed here, not chosen after the fact.
@@ -88,11 +90,12 @@ const frameP99 = (id: Id, t: string) => mean(frames(id, t).map((f) => f.summary.
 const stepP50 = (id: Id, t: string) => mean(frames(id, t).map((f) => f.stepMs.mean));
 const jank = (id: Id, t: string) => mean(frames(id, t).map((f) => f.jankPct));
 const hz = parityPasses("tauri")[0]?.refreshHz;
-const parityWinner = lower({ tauri: median(stepPooled("tauri")), electron: median(stepPooled("electron")) });
+// Site scorecards rank by the MEAN of the charted series; winners follow the same statistic so headline and table agree.
+const parityWinner = lower({ tauri: mean(stepPooled("tauri")), electron: mean(stepPooled("electron")) });
 const paritySection = {
   id: "parity", title: "Webview parity", deck: `The same frontend, three engines: a 100,000-row virtualized table scrolled by script, 100,000 particles on Canvas 2D, and a 16-octave noise shader on WebGL2, each ${r.protocol.parityFrames} frames after ${r.protocol.parityWarmupFrames} warmup frames. Frame time is vsync-capped at ${hz} Hz so the tail and the main-thread step time carry the signal; the chart is step time per frame pooled over the three tests.`,
   unit: "ms", lowerIsBetter: true,
-  verdict: { winnerId: parityWinner, headline: `${name(parityWinner)}'s webview spent ${round(median(stepPooled(parityWinner)), 2)} ms of main-thread time per frame to ${round(median(stepPooled(parityWinner === "tauri" ? "electron" : "tauri")), 2)} ms, pooled over table, particles and raster`, summary: tests.map((t) => `${t}: frame p99 ${ids.map((id) => `${name(id)} ${round(frameP99(id, t), 1)}`).join(" / ")} ms, step p50 ${ids.map((id) => `${round(stepP50(id, t), 2)}`).join(" / ")} ms, jank ${ids.map((id) => `${round(jank(id, t), 1)}%`).join(" / ")}`).join(". ") + "." },
+  verdict: { winnerId: parityWinner, headline: `${name(parityWinner)}'s webview spent ${round(mean(stepPooled(parityWinner)), 2)} ms of main-thread time per frame to ${round(mean(stepPooled(parityWinner === "tauri" ? "electron" : "tauri")), 2)} ms, pooled over table, particles and raster`, summary: tests.map((t) => `${t}: frame p99 ${ids.map((id) => `${name(id)} ${round(frameP99(id, t), 1)}`).join(" / ")} ms, step p50 ${ids.map((id) => `${round(stepP50(id, t), 2)}`).join(" / ")} ms, jank ${ids.map((id) => `${round(jank(id, t), 1)}%`).join(" / ")}`).join(". ") + "." },
   candidates: ids.map((id) => cand(id, stepPooled(id), Object.fromEntries([
     ...tests.flatMap((t) => [
       [`${t}-frame-p99`, { value: round(frameP99(id, t), 2), unit: "ms", label: `${t}: frame time p99` }],
@@ -117,13 +120,13 @@ const soakStat = (id: Id, f: (b: number[]) => number) => mean((r.soak[id] as Soa
 const soakStart = (id: Id) => mean((r.soak[id] as Array<{ samples: Array<{ tMs: number; bytes: number }> }>).map((s) => (s.samples.find((x) => x.tMs >= 5000) ?? s.samples[0]).bytes));
 const soakEnd = (id: Id) => soakStat(id, (b) => b[b.length - 1]);
 const soakPeak = (id: Id) => soakStat(id, (b) => Math.max(...b));
-const coldWinner = lower({ tauri: median(cold("tauri")), electron: median(cold("electron")) });
+const coldWinner = lower({ tauri: mean(cold("tauri")), electron: mean(cold("electron")) });
 const memWinner = lower({ tauri: soakEnd("tauri"), electron: soakEnd("electron") });
 const purgeNote = r.protocol.purge === "ok" ? "after the OS file cache was purged" : "WITHOUT a cache purge (purge unavailable on this rig)";
 const lifecycleSection = {
   id: "lifecycle", title: "Lifecycle", deck: `Cold start ${purgeNote}: from the launch command to the frontend's first animation frame, on one wall clock, ${r.protocol.coldStarts} launches each. Warm start immediately after a prior launch, ${r.protocol.warmStarts} each. Then a ${r.protocol.soakSeconds / 60}-minute soak cycling the three parity tests with a 1 MB round trip every ${r.protocol.soakIpcEverySeconds} s, footprint sampled every second, ${r.protocol.soaks} soaks each.`,
   unit: "ms", lowerIsBetter: true,
-  verdict: { winnerId: coldWinner, headline: `${name(coldWinner)} reached its first frame in ${round(median(cold(coldWinner)), 0)} ms cold to ${name(coldWinner === "tauri" ? "electron" : "tauri")}'s ${round(median(cold(coldWinner === "tauri" ? "electron" : "tauri")), 0)}; after ten minutes of work ${name(memWinner)} held ${MB(soakEnd(memWinner))} MB to ${MB(soakEnd(memWinner === "tauri" ? "electron" : "tauri"))} MB`, summary: `Warm start medians: ${ids.map((id) => `${name(id)} ${round(median(warm(id)), 0)} ms`).join(", ")}. Footprint at soak start / end / peak, mean over soaks: ${ids.map((id) => `${name(id)} ${MB(soakStart(id))} / ${MB(soakEnd(id))} / ${MB(soakPeak(id))} MB`).join("; ")}. ${r.protocol.attributionRule}` },
+  verdict: { winnerId: coldWinner, headline: `${name(coldWinner)} reached its first frame in ${round(mean(cold(coldWinner)), 0)} ms cold (mean) to ${name(coldWinner === "tauri" ? "electron" : "tauri")}'s ${round(mean(cold(coldWinner === "tauri" ? "electron" : "tauri")), 0)}; after ten minutes of work ${name(memWinner)} held ${MB(soakEnd(memWinner))} MB to ${MB(soakEnd(memWinner === "tauri" ? "electron" : "tauri"))} MB`, summary: `Warm start medians: ${ids.map((id) => `${name(id)} ${round(median(warm(id)), 0)} ms`).join(", ")}. Footprint at soak start / end / peak, mean over soaks: ${ids.map((id) => `${name(id)} ${MB(soakStart(id))} / ${MB(soakEnd(id))} / ${MB(soakPeak(id))} MB`).join("; ")}. ${r.protocol.attributionRule}` },
   candidates: ids.map((id) => cand(id, cold(id), {
     "warm-median": { value: round(median(warm(id)), 1), unit: "ms", label: "Warm start median" },
     "host-to-first-frame": { value: round(median((r.cold[id] as Start[]).map((s) => s.hostToFirstFrameMs)), 1), unit: "ms", label: "Host process start to first frame, median (excludes launcher latency)" },
