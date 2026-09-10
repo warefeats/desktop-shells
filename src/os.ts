@@ -52,6 +52,9 @@ function alive(pid: number): boolean {
   try { process.kill(pid, 0); return true; } catch { return false; }
 }
 
+/** Switches that keep Chromium rendering when its window is covered or judged occluded. */
+export const CHROMIUM_NO_BACKGROUNDING = ["--disable-backgrounding-occluded-windows", "--disable-renderer-backgrounding"];
+
 // ---------------------------------------------------------------- darwin
 const root = path.resolve(import.meta.dir, "..");
 let responsibleBin: string | undefined;
@@ -87,7 +90,10 @@ const darwin: Adapter = {
     if (existsSync(stdoutPath)) unlinkSync(stdoutPath);
     const args = ["-n", "-W", "--stdout", stdoutPath, "--stderr", stdoutPath + ".err"];
     for (const [k, v] of Object.entries(env)) args.push("--env", `${k}=${v}`);
-    args.push(c.appPath);
+    // Chromium stops animation frames in a window another app covers; WKWebView
+    // does not. Both shells get the same switches (Tauri ignores them) so the
+    // treatment is identical and a covered window cannot hang a pass.
+    args.push(c.appPath, "--args", ...CHROMIUM_NO_BACKGROUNDING);
     const spawnedAtMs = Date.now();
     // `open -W` returns when the app exits; the app is its own responsible
     // process under LaunchServices, which is what makes coalition() work.
@@ -173,9 +179,9 @@ const win32: Adapter = {
     // animation frames; Electron never reaches its first frame while WebView2
     // does. Both shells get the same switch so neither is treated differently:
     // Electron reads it from argv, WebView2 from this environment variable.
-    const occlusion = "--disable-features=CalculateNativeWinOcclusion";
+    const switches = ["--disable-features=CalculateNativeWinOcclusion", ...CHROMIUM_NO_BACKGROUNDING];
     const spawnedAtMs = Date.now();
-    const child = spawn(c.appPath, [occlusion], { env: { ...process.env, ...env, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: occlusion }, stdio: ["ignore", fd, fd] });
+    const child = spawn(c.appPath, switches, { env: { ...process.env, ...env, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: switches.join(" ") }, stdio: ["ignore", fd, fd] });
     const exited = new Promise<void>((res, rej) => {
       const timer = setTimeout(() => { rej(new Error(`${c.id} did not exit within ${timeoutMs} ms`)); child.kill(); }, timeoutMs);
       child.on("exit", () => { clearTimeout(timer); closeSync(fd); res(); });
