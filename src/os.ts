@@ -131,7 +131,7 @@ const darwin: Adapter = {
     },
   },
   installerBytes: (c) => statSync(c.installerPath).size,
-  installedBytes: (c) => duBytes(c.appPath),
+  installedBytes: (c) => duBytes(c.installedPath),
   rig() {
     const sysctl = (k: string) => execFileSync("sysctl", ["-n", k], { encoding: "utf8" }).trim();
     const sw = (k: string) => execFileSync("sw_vers", [k], { encoding: "utf8" }).trim();
@@ -211,7 +211,7 @@ const win32: Adapter = {
     },
   },
   installerBytes: (c) => statSync(c.installerPath).size,
-  installedBytes: (c) => duBytes(path.dirname(c.appPath)),
+  installedBytes: (c) => duBytes(c.installedPath),
   rig() {
     const j = JSON.parse(ps(`@{ cpu=(Get-CimInstance Win32_Processor).Name; cores=(Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors; mem=(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory; os=(Get-CimInstance Win32_OperatingSystem).Caption; build=(Get-CimInstance Win32_OperatingSystem).BuildNumber; model=(Get-CimInstance Win32_ComputerSystem).Model; gpu=((Get-CimInstance Win32_VideoController).Name -join '; '); driver=((Get-CimInstance Win32_VideoController).DriverVersion -join '; '); hz=((Get-CimInstance Win32_VideoController).CurrentRefreshRate -join '; ') } | ConvertTo-Json -Compress`));
     return {

@@ -17,6 +17,8 @@ export interface Candidate {
   exePath: string;
   /** Installer produced by the default build: dmg on macOS, nsis exe on Windows. */
   installerPath: string;
+  /** What ends up on disk after install: the .app on macOS, the exe (frontend embedded) for Tauri on Windows, the unpacked dir for Electron on Windows. */
+  installedPath: string;
 }
 
 const root = path.resolve(import.meta.dir, "..");
@@ -47,12 +49,14 @@ export function candidates(platform: NodeJS.Platform = process.platform): Candid
         appPath: one("hosts/tauri/target/release/bundle/macos/desktop-shells-tauri.app", "Tauri app"),
         exePath: one("hosts/tauri/target/release/bundle/macos/desktop-shells-tauri.app/Contents/MacOS/desktop-shells-tauri", "Tauri exe"),
         installerPath: one("hosts/tauri/target/release/bundle/dmg/*.dmg", "Tauri dmg"),
+        installedPath: one("hosts/tauri/target/release/bundle/macos/desktop-shells-tauri.app", "Tauri app"),
       },
       {
         id: "electron", name: "electron", version: electronVersion(), homepage: "https://www.electronjs.org", color: "#9feaf9",
         appPath: one("hosts/electron/out/mac*/desktop-shells-electron.app", "Electron app"),
         exePath: one("hosts/electron/out/mac*/desktop-shells-electron.app/Contents/MacOS/desktop-shells-electron", "Electron exe"),
         installerPath: one("hosts/electron/out/*.dmg", "Electron dmg"),
+        installedPath: one("hosts/electron/out/mac*/desktop-shells-electron.app", "Electron app"),
       },
     ];
   }
@@ -63,12 +67,14 @@ export function candidates(platform: NodeJS.Platform = process.platform): Candid
         appPath: one("hosts/tauri/target/release/desktop-shells-tauri.exe", "Tauri exe"),
         exePath: one("hosts/tauri/target/release/desktop-shells-tauri.exe", "Tauri exe"),
         installerPath: one("hosts/tauri/target/release/bundle/nsis/*-setup.exe", "Tauri nsis installer"),
+        installedPath: one("hosts/tauri/target/release/desktop-shells-tauri.exe", "Tauri exe"),
       },
       {
         id: "electron", name: "electron", version: electronVersion(), homepage: "https://www.electronjs.org", color: "#9feaf9",
         appPath: one("hosts/electron/out/win-unpacked/desktop-shells-electron.exe", "Electron exe"),
         exePath: one("hosts/electron/out/win-unpacked/desktop-shells-electron.exe", "Electron exe"),
         installerPath: one("hosts/electron/out/*Setup*.exe", "Electron nsis installer"),
+        installedPath: one("hosts/electron/out/win-unpacked", "Electron unpacked dir"),
       },
     ];
   }
