@@ -118,7 +118,8 @@ interface Soak { samples: Array<{ bytes: number }> }
 const soakStat = (id: Id, f: (b: number[]) => number) => mean((r.soak[id] as Soak[]).map((s) => f(s.samples.map((x) => x.bytes))));
 // First sample at or after five seconds: the first seconds are the shell booting, not the app working.
 const soakStart = (id: Id) => mean((r.soak[id] as Array<{ samples: Array<{ tMs: number; bytes: number }> }>).map((s) => (s.samples.find((x) => x.tMs >= 5000) ?? s.samples[0]).bytes));
-const soakEnd = (id: Id) => soakStat(id, (b) => b[b.length - 1]);
+// Last sample at least three seconds before the soak's scripted end: the final sample lands mid-teardown.
+const soakEnd = (id: Id) => mean((r.soak[id] as Array<{ samples: Array<{ tMs: number; bytes: number }> }>).map((s) => { const cutoff = r.protocol.soakSeconds * 1000 - 3000; const before = s.samples.filter((x) => x.tMs <= cutoff); return (before[before.length - 1] ?? s.samples[s.samples.length - 1]).bytes; }));
 const soakPeak = (id: Id) => soakStat(id, (b) => Math.max(...b));
 const coldWinner = lower({ tauri: mean(cold("tauri")), electron: mean(cold("electron")) });
 const memWinner = lower({ tauri: soakEnd("tauri"), electron: soakEnd("electron") });
