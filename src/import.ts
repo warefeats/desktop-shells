@@ -118,27 +118,28 @@ interface Soak { samples: Array<{ bytes: number }> }
 const soakStat = (id: Id, f: (b: number[]) => number) => mean((r.soak[id] as Soak[]).map((s) => f(s.samples.map((x) => x.bytes))));
 // First sample at or after five seconds: the first seconds are the shell booting, not the app working.
 const soakStart = (id: Id) => mean((r.soak[id] as Array<{ samples: Array<{ tMs: number; bytes: number }> }>).map((s) => (s.samples.find((x) => x.tMs >= 5000) ?? s.samples[0]).bytes));
-// Last sample at least three seconds before the soak's scripted end: the final sample lands mid-teardown.
-const soakEnd = (id: Id) => mean((r.soak[id] as Array<{ samples: Array<{ tMs: number; bytes: number }> }>).map((s) => { const cutoff = r.protocol.soakSeconds * 1000 - 3000; const before = s.samples.filter((x) => x.tMs <= cutoff); return (before[before.length - 1] ?? s.samples[s.samples.length - 1]).bytes; }));
+// Footprint oscillates with the soak's segments (table low, particles high), so the end sample
+// only says which segment ran last. The mean over the soak after the first five seconds is the statistic.
+const soakMean = (id: Id) => mean((r.soak[id] as Array<{ samples: Array<{ tMs: number; bytes: number }> }>).map((s) => mean(s.samples.filter((x) => x.tMs >= 5000 && x.tMs <= r.protocol.soakSeconds * 1000 - 3000).map((x) => x.bytes))));
 const soakPeak = (id: Id) => soakStat(id, (b) => Math.max(...b));
 const coldWinner = lower({ tauri: mean(cold("tauri")), electron: mean(cold("electron")) });
-const memWinner = lower({ tauri: soakEnd("tauri"), electron: soakEnd("electron") });
+const memWinner = lower({ tauri: soakMean("tauri"), electron: soakMean("electron") });
 const purgeNote = r.protocol.purge === "ok" ? "after the OS file cache was purged" : "WITHOUT a cache purge (purge unavailable on this rig)";
 const lifecycleSection = {
   id: "lifecycle", title: "Lifecycle", deck: `Cold start ${purgeNote}: from the launch command to the frontend's first animation frame, on one wall clock, ${r.protocol.coldStarts} launches each. Warm start immediately after a prior launch, ${r.protocol.warmStarts} each. Then a ${r.protocol.soakSeconds / 60}-minute soak cycling the three parity tests with a 1 MB round trip every ${r.protocol.soakIpcEverySeconds} s, footprint sampled every second, ${r.protocol.soaks} soaks each.`,
   unit: "ms", lowerIsBetter: true,
-  verdict: { winnerId: coldWinner, headline: `${name(coldWinner)} reached its first frame in ${round(mean(cold(coldWinner)), 0)} ms cold (mean) to ${name(coldWinner === "tauri" ? "electron" : "tauri")}'s ${round(mean(cold(coldWinner === "tauri" ? "electron" : "tauri")), 0)}; after ten minutes of work ${name(memWinner)} held ${MB(soakEnd(memWinner))} MB to ${MB(soakEnd(memWinner === "tauri" ? "electron" : "tauri"))} MB`, summary: `Warm start medians: ${ids.map((id) => `${name(id)} ${round(median(warm(id)), 0)} ms`).join(", ")}. Footprint at soak start / end / peak, mean over soaks: ${ids.map((id) => `${name(id)} ${MB(soakStart(id))} / ${MB(soakEnd(id))} / ${MB(soakPeak(id))} MB`).join("; ")}. ${r.protocol.attributionRule}` },
+  verdict: { winnerId: coldWinner, headline: `${name(coldWinner)} reached its first frame in ${round(mean(cold(coldWinner)), 0)} ms cold (mean) to ${name(coldWinner === "tauri" ? "electron" : "tauri")}'s ${round(mean(cold(coldWinner === "tauri" ? "electron" : "tauri")), 0)}; over ten minutes of work ${name(memWinner)} averaged ${MB(soakMean(memWinner))} MB to ${MB(soakMean(memWinner === "tauri" ? "electron" : "tauri"))} MB`, summary: `Warm start medians: ${ids.map((id) => `${name(id)} ${round(median(warm(id)), 0)} ms`).join(", ")}. Footprint at soak start / mean / peak, averaged over soaks: ${ids.map((id) => `${name(id)} ${MB(soakStart(id))} / ${MB(soakMean(id))} / ${MB(soakPeak(id))} MB`).join("; ")}. Footprint swings with the segment, around a third as much during the table as during the particles, so the mean is the figure to quote. ${r.protocol.attributionRule}` },
   candidates: ids.map((id) => cand(id, cold(id), {
     "warm-median": { value: round(median(warm(id)), 1), unit: "ms", label: "Warm start median" },
     "host-to-first-frame": { value: round(median((r.cold[id] as Start[]).map((s) => s.hostToFirstFrameMs)), 1), unit: "ms", label: "Host process start to first frame, median (excludes launcher latency)" },
     "soak-start": { value: MB(soakStart(id)), unit: "MB", label: "Footprint at soak start" },
-    "soak-end": { value: MB(soakEnd(id)), unit: "MB", label: "Footprint at soak end" },
+    "soak-mean": { value: MB(soakMean(id)), unit: "MB", label: "Footprint, mean over the soak" },
     "soak-peak": { value: MB(soakPeak(id)), unit: "MB", label: "Footprint peak during soak" },
   })),
   tests: [
     { id: "cold", title: "Cold start", description: `Launch command to first animation frame ${purgeNote}, median of ${r.protocol.coldStarts}.`, unit: "ms", lowerIsBetter: true, results: ids.map((id) => ({ candidateId: id, value: round(median(cold(id)), 1) })) },
     { id: "warm", title: "Warm start", description: `Same measurement immediately after a prior launch, median of ${r.protocol.warmStarts}.`, unit: "ms", lowerIsBetter: true, results: ids.map((id) => ({ candidateId: id, value: round(median(warm(id)), 1) })) },
-    { id: "soak-end", title: "Footprint after soak", description: "Attributed memory at the end of the ten-minute soak, mean over soaks.", unit: "MB", lowerIsBetter: true, results: ids.map((id) => ({ candidateId: id, value: MB(soakEnd(id)) })) },
+    { id: "soak-mean", title: "Footprint over soak", description: "Attributed memory averaged over the ten-minute soak, after the first five seconds, averaged over soaks.", unit: "MB", lowerIsBetter: true, results: ids.map((id) => ({ candidateId: id, value: MB(soakMean(id)) })) },
     { id: "soak-peak", title: "Footprint peak", description: "Highest attributed memory sampled during the soak, mean over soaks.", unit: "MB", lowerIsBetter: true, results: ids.map((id) => ({ candidateId: id, value: MB(soakPeak(id)) })) },
   ],
 };

@@ -1,0 +1,1367 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-09-10-radeon-680m-win11",
+  "label": "Radeon 680M / Windows 11 (local)",
+  "publishedAt": "2026-09-10",
+  "environment": {
+    "machine": "EffiZen Series",
+    "chip": "AMD Ryzen 7 6800H with Radeon Graphics         ",
+    "cores": "16",
+    "memory": "21 GB",
+    "os": "Microsoft Windows 11 Pro (build 26100)",
+    "arch": "x64",
+    "runtime": "bun 1.4.0",
+    "gpu": "AMD Radeon(TM) Graphics (driver 32.0.12033.1030)",
+    "display": "59 Hz",
+    "browser": "Tauri: 152.0.4191.66; Electron: Chromium 152.0.7977.78"
+  },
+  "protocol": {
+    "warmups": 5,
+    "runs": 4,
+    "processModel": "Apps launched direct spawn in the interactive session with --disable-features=CalculateNativeWinOcclusion passed to both shells (argv for Electron, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS for WebView2); WebView2 and Electron helpers are children; candidates interleaved A B / B A pass by pass; 20 cold and 10 warm starts, 4 IPC passes of 50 samples per cell after 5 warmups with small payloads batched to cover the webview's timer resolution, 5 parity passes of 600 frames, 3 ten-minute soaks; a conformance gate with byte-identical digests on both hosts precedes every run",
+    "cacheState": "No cache purge available on this rig; cold starts are launches after a settle, not cold",
+    "output": "FIRST_FRAME marker on the host's stdout timed against the launcher's wall clock; frontend performance.now() for round trips and frames; Windows: private working set (Win32_PerfFormattedData_PerfProc_Process.WorkingSetPrivate) summed over the app process and every descendant by parent process id, which includes msedgewebview2.exe for the Tauri candidate and every Electron helper for the Electron candidate."
+  },
+  "candidates": [],
+  "sections": [
+    {
+      "id": "ipc",
+      "title": "IPC across the boundary",
+      "deck": "Round trips from the frontend to the host and back at 1 KB, 64 KB, 1 MB, 16 MB, on each shell's idiomatic JSON path and on its raw bytes path, plus host-to-frontend push at 1000 events per second. The chart is the idiomatic 1 MB round trip; the headline is the geometric mean over the idiomatic sizes.",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "verdict": {
+        "winnerId": "electron",
+        "headline": "Electron moved JSON across the boundary 1.81 times faster than Tauri over 1 KB, 64 KB, 1 MB, 16 MB (geometric mean of medians)",
+        "summary": "Per size, Tauri over Electron: 1 KB 6x, 64 KB 1.65x, 1 MB 1.25x, 16 MB 0.87x. Raw bytes: 1 KB 8.15x, 64 KB 4.8x, 1 MB 5.67x, 16 MB 5.52x."
+      },
+      "candidates": [
+        {
+          "id": "tauri",
+          "name": "Tauri",
+          "version": "2.11.5",
+          "color": "#24c8db",
+          "homepage": "https://tauri.app",
+          "statistics": {
+            "medianMs": 58.3,
+            "meanMs": 58.432,
+            "minMs": 53.8,
+            "maxMs": 73.5
+          },
+          "samplesMs": [
+            58.8,
+            58.6,
+            56.8,
+            56.2,
+            56.2,
+            55.2,
+            54.8,
+            55.4,
+            55.2,
+            55,
+            55.4,
+            54.7,
+            54.9,
+            54.4,
+            54,
+            55.7,
+            55.7,
+            55.1,
+            55.7,
+            56.5,
+            57.4,
+            57,
+            56.7,
+            55.8,
+            55.1,
+            55.5,
+            56.4,
+            55.1,
+            55,
+            55.3,
+            53.9,
+            53.8,
+            54.5,
+            54.5,
+            54.7,
+            54.8,
+            54.3,
+            54.8,
+            57.5,
+            57.3,
+            56,
+            55.1,
+            54.5,
+            54.1,
+            54.8,
+            54,
+            54.3,
+            54.6,
+            54,
+            54.9,
+            61,
+            60.4,
+            59.6,
+            58.3,
+            58.7,
+            58.3,
+            57.8,
+            59.1,
+            58.4,
+            58.7,
+            58,
+            58.8,
+            58.8,
+            58.6,
+            58.8,
+            59,
+            59.2,
+            58.9,
+            58.9,
+            61.3,
+            60.3,
+            58.3,
+            58.4,
+            58.7,
+            59.5,
+            57.8,
+            58.2,
+            58.2,
+            58,
+            58.4,
+            58.3,
+            57.8,
+            58.4,
+            58.7,
+            59,
+            58.9,
+            68.4,
+            58.9,
+            61.6,
+            62.5,
+            61.8,
+            60.2,
+            60.1,
+            61.4,
+            66.2,
+            72.9,
+            73.5,
+            73,
+            61.1,
+            65.4,
+            66.5,
+            62.4,
+            60.9,
+            60.2,
+            60.5,
+            61.3,
+            60.6,
+            61.9,
+            58.2,
+            59.9,
+            58.9,
+            59.1,
+            58.6,
+            57.8,
+            59.6,
+            59.2,
+            59.1,
+            58,
+            59,
+            61.1,
+            59.6,
+            58.8,
+            58.5,
+            57.9,
+            57.7,
+            57.7,
+            58,
+            58.4,
+            58.2,
+            59.5,
+            58.4,
+            58.4,
+            59.1,
+            59.2,
+            59.3,
+            65.8,
+            58.9,
+            59,
+            62.9,
+            60.4,
+            58.4,
+            57.6,
+            59.3,
+            58.7,
+            59.5,
+            58.7,
+            58.9,
+            58.1,
+            58.5,
+            60,
+            60.2,
+            59.7,
+            57.1,
+            57.9,
+            58.2,
+            56.5,
+            57.6,
+            57.4,
+            56.9,
+            57.8,
+            57.2,
+            57.3,
+            57.6,
+            57.8,
+            59.3,
+            58,
+            58.8,
+            59.2,
+            59.7,
+            60.8,
+            59.6,
+            59.3,
+            57.8,
+            57.6,
+            56.4,
+            57,
+            57.6,
+            57,
+            57.7,
+            57.4,
+            57,
+            56.6,
+            57,
+            56.7,
+            57.8,
+            57.5,
+            68,
+            58.8,
+            60.8,
+            58.9,
+            60.2,
+            58.3,
+            57.2,
+            58.3,
+            57.5,
+            57,
+            59.4,
+            56.5,
+            60.6,
+            59.2
+          ],
+          "metrics": {
+            "idiomatic-1024": {
+              "value": 0.9,
+              "unit": "ms",
+              "label": "Idiomatic 1 KB round trip median"
+            },
+            "raw-1024": {
+              "value": 0.86,
+              "unit": "ms",
+              "label": "Raw 1 KB round trip median"
+            },
+            "idiomatic-65536": {
+              "value": 5.2,
+              "unit": "ms",
+              "label": "Idiomatic 64 KB round trip median"
+            },
+            "raw-65536": {
+              "value": 2.4,
+              "unit": "ms",
+              "label": "Raw 64 KB round trip median"
+            },
+            "idiomatic-1048576": {
+              "value": 58.3,
+              "unit": "ms",
+              "label": "Idiomatic 1 MB round trip median"
+            },
+            "raw-1048576": {
+              "value": 26.95,
+              "unit": "ms",
+              "label": "Raw 1 MB round trip median"
+            },
+            "idiomatic-16777216": {
+              "value": 932.5,
+              "unit": "ms",
+              "label": "Idiomatic 16 MB round trip median"
+            },
+            "raw-16777216": {
+              "value": 376.9,
+              "unit": "ms",
+              "label": "Raw 16 MB round trip median"
+            },
+            "push-rate": {
+              "value": 999,
+              "unit": "events/s",
+              "label": "Idiomatic push delivered per second (requested 1000)"
+            },
+            "push-lost": {
+              "value": 0,
+              "unit": "events",
+              "label": "Idiomatic push events lost"
+            },
+            "push-gap-p99": {
+              "value": 1.43,
+              "unit": "ms",
+              "label": "Idiomatic push inter-arrival gap p99"
+            },
+            "push-raw-rate": {
+              "value": 1000,
+              "unit": "events/s",
+              "label": "Raw push delivered per second (requested 1000)"
+            },
+            "push-raw-gap-p99": {
+              "value": 1.75,
+              "unit": "ms",
+              "label": "Raw push inter-arrival gap p99"
+            },
+            "timer-resolution": {
+              "value": 0.1,
+              "unit": "ms",
+              "label": "Webview timer resolution (round trips batched to cover it)"
+            }
+          }
+        },
+        {
+          "id": "electron",
+          "name": "Electron",
+          "version": "44.3.0",
+          "color": "#9feaf9",
+          "homepage": "https://www.electronjs.org",
+          "statistics": {
+            "medianMs": 46.8,
+            "meanMs": 47.015,
+            "minMs": 45,
+            "maxMs": 56.9
+          },
+          "samplesMs": [
+            53.4,
+            48.1,
+            48,
+            49.3,
+            47.1,
+            48.8,
+            47.9,
+            49.4,
+            47,
+            48.3,
+            48.3,
+            49,
+            46.7,
+            48.1,
+            47.7,
+            48.2,
+            46.4,
+            48.4,
+            47.1,
+            48.9,
+            46.1,
+            48.6,
+            46.9,
+            48.2,
+            45.9,
+            47.8,
+            46.5,
+            46.9,
+            46,
+            47.5,
+            46.7,
+            46.9,
+            47.1,
+            48.8,
+            48.7,
+            48.8,
+            47,
+            47.5,
+            47.4,
+            56.9,
+            47.8,
+            46.5,
+            48.1,
+            47.6,
+            49.6,
+            47,
+            48.3,
+            47.1,
+            49.1,
+            47,
+            51.1,
+            45.8,
+            45.8,
+            47.3,
+            45.2,
+            47,
+            45.6,
+            46.7,
+            45.5,
+            46.3,
+            46.5,
+            47.1,
+            46.4,
+            46.5,
+            45.8,
+            47.4,
+            45.3,
+            47,
+            46.8,
+            47,
+            45.9,
+            46.7,
+            45.4,
+            47.5,
+            46.6,
+            46.6,
+            45.7,
+            46.6,
+            46,
+            47,
+            45,
+            46.5,
+            46.4,
+            47.8,
+            46.9,
+            47.4,
+            45.7,
+            46.8,
+            45.6,
+            55.3,
+            46.3,
+            45.5,
+            47.5,
+            46.7,
+            47.8,
+            46.2,
+            46.9,
+            45.7,
+            46.4,
+            45.5,
+            46.5,
+            46.8,
+            45.7,
+            48,
+            46.4,
+            46.9,
+            46.3,
+            47.4,
+            45.7,
+            47.1,
+            45.5,
+            47,
+            45.8,
+            47.5,
+            46.8,
+            47.9,
+            46,
+            47.3,
+            46.4,
+            47.2,
+            46.3,
+            47.4,
+            46.4,
+            46.6,
+            45.4,
+            46.6,
+            46.7,
+            47.8,
+            46.2,
+            47.7,
+            45.3,
+            47.1,
+            47,
+            55.6,
+            46.6,
+            46.1,
+            46.9,
+            45.3,
+            46.9,
+            46.7,
+            46.8,
+            45.8,
+            46.5,
+            45.8,
+            47,
+            46.5,
+            47.1,
+            45.8,
+            46.7,
+            45.4,
+            45.5,
+            47.1,
+            46,
+            47.5,
+            45.4,
+            45.9,
+            45.7,
+            46.2,
+            45.5,
+            46.8,
+            46.1,
+            46.6,
+            46.5,
+            47.4,
+            46.8,
+            47.5,
+            45.3,
+            46.8,
+            46.1,
+            46.5,
+            45.5,
+            48.1,
+            45.6,
+            47.1,
+            46.2,
+            47.2,
+            46,
+            47.4,
+            45.8,
+            47.5,
+            45.9,
+            46.8,
+            46.1,
+            56.2,
+            45.9,
+            45.9,
+            47,
+            46,
+            47.5,
+            46.3,
+            46.2,
+            45.4,
+            47.3,
+            45.7,
+            47.5,
+            46,
+            47.1,
+            45.2,
+            46.4,
+            46.4
+          ],
+          "metrics": {
+            "idiomatic-1024": {
+              "value": 0.15,
+              "unit": "ms",
+              "label": "Idiomatic 1 KB round trip median"
+            },
+            "raw-1024": {
+              "value": 0.106,
+              "unit": "ms",
+              "label": "Raw 1 KB round trip median"
+            },
+            "idiomatic-65536": {
+              "value": 3.15,
+              "unit": "ms",
+              "label": "Idiomatic 64 KB round trip median"
+            },
+            "raw-65536": {
+              "value": 0.5,
+              "unit": "ms",
+              "label": "Raw 64 KB round trip median"
+            },
+            "idiomatic-1048576": {
+              "value": 46.8,
+              "unit": "ms",
+              "label": "Idiomatic 1 MB round trip median"
+            },
+            "raw-1048576": {
+              "value": 4.75,
+              "unit": "ms",
+              "label": "Raw 1 MB round trip median"
+            },
+            "idiomatic-16777216": {
+              "value": 1067.95,
+              "unit": "ms",
+              "label": "Idiomatic 16 MB round trip median"
+            },
+            "raw-16777216": {
+              "value": 68.25,
+              "unit": "ms",
+              "label": "Raw 16 MB round trip median"
+            },
+            "push-rate": {
+              "value": 999,
+              "unit": "events/s",
+              "label": "Idiomatic push delivered per second (requested 1000)"
+            },
+            "push-lost": {
+              "value": 0,
+              "unit": "events",
+              "label": "Idiomatic push events lost"
+            },
+            "push-gap-p99": {
+              "value": 16,
+              "unit": "ms",
+              "label": "Idiomatic push inter-arrival gap p99"
+            },
+            "push-raw-rate": {
+              "value": 999,
+              "unit": "events/s",
+              "label": "Raw push delivered per second (requested 1000)"
+            },
+            "push-raw-gap-p99": {
+              "value": 16,
+              "unit": "ms",
+              "label": "Raw push inter-arrival gap p99"
+            },
+            "timer-resolution": {
+              "value": 0.1,
+              "unit": "ms",
+              "label": "Webview timer resolution (round trips batched to cover it)"
+            }
+          }
+        }
+      ],
+      "tests": [
+        {
+          "id": "idiomatic-1024",
+          "title": "Idiomatic 1 KB",
+          "description": "Median round trip of a 1 KB JSON payload of seeded rows, frontend to host and back, on the path each shell's docs recommend.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 0.9
+            },
+            {
+              "candidateId": "electron",
+              "value": 0.15
+            }
+          ]
+        },
+        {
+          "id": "idiomatic-65536",
+          "title": "Idiomatic 64 KB",
+          "description": "Median round trip of a 64 KB JSON payload of seeded rows, frontend to host and back, on the path each shell's docs recommend.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 5.2
+            },
+            {
+              "candidateId": "electron",
+              "value": 3.15
+            }
+          ]
+        },
+        {
+          "id": "idiomatic-1048576",
+          "title": "Idiomatic 1 MB",
+          "description": "Median round trip of a 1 MB JSON payload of seeded rows, frontend to host and back, on the path each shell's docs recommend.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 58.3
+            },
+            {
+              "candidateId": "electron",
+              "value": 46.8
+            }
+          ]
+        },
+        {
+          "id": "idiomatic-16777216",
+          "title": "Idiomatic 16 MB",
+          "description": "Median round trip of a 16 MB JSON payload of seeded rows, frontend to host and back, on the path each shell's docs recommend.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 932.5
+            },
+            {
+              "candidateId": "electron",
+              "value": 1067.95
+            }
+          ]
+        },
+        {
+          "id": "raw-1024",
+          "title": "Raw 1 KB",
+          "description": "Median round trip of 1 KB of seeded bytes on the shell's bytes path: Tauri raw request and response, Electron Uint8Array over invoke.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 0.86
+            },
+            {
+              "candidateId": "electron",
+              "value": 0.106
+            }
+          ]
+        },
+        {
+          "id": "raw-65536",
+          "title": "Raw 64 KB",
+          "description": "Median round trip of 64 KB of seeded bytes on the shell's bytes path: Tauri raw request and response, Electron Uint8Array over invoke.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 2.4
+            },
+            {
+              "candidateId": "electron",
+              "value": 0.5
+            }
+          ]
+        },
+        {
+          "id": "raw-1048576",
+          "title": "Raw 1 MB",
+          "description": "Median round trip of 1 MB of seeded bytes on the shell's bytes path: Tauri raw request and response, Electron Uint8Array over invoke.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 26.95
+            },
+            {
+              "candidateId": "electron",
+              "value": 4.75
+            }
+          ]
+        },
+        {
+          "id": "raw-16777216",
+          "title": "Raw 16 MB",
+          "description": "Median round trip of 16 MB of seeded bytes on the shell's bytes path: Tauri raw request and response, Electron Uint8Array over invoke.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 376.9
+            },
+            {
+              "candidateId": "electron",
+              "value": 68.25
+            }
+          ]
+        },
+        {
+          "id": "push-gap-p99",
+          "title": "Push inter-arrival p99",
+          "description": "Host emits 1024 B events at 1000 per second for 10 s over the idiomatic event path; the p99 gap between arrivals on the frontend.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 1.43
+            },
+            {
+              "candidateId": "electron",
+              "value": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parity",
+      "title": "Webview parity",
+      "deck": "The same frontend, three engines: a 100,000-row virtualized table scrolled by script, 100,000 particles on Canvas 2D, and a 16-octave noise shader on WebGL2, each 600 frames after 60 warmup frames. Frame time is vsync-capped at 57 Hz so the tail and the main-thread step time carry the signal; the chart is step time per frame pooled over the three tests.",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "verdict": {
+        "winnerId": "tauri",
+        "headline": "Tauri's webview spent 11.85 ms of main-thread time per frame to 16.98 ms, pooled over table, particles and raster",
+        "summary": "table: frame p99 Tauri 19.5 / Electron 19 ms, step p50 0.58 / 0.52 ms, jank 0.2% / 0.2%. particles: frame p99 Tauri 63.8 / Electron 81.5 ms, step p50 34.97 / 50.41 ms, jank 94% / 97.9%. raster: frame p99 Tauri 18.8 / Electron 18.8 ms, step p50 0.01 / 0.01 ms, jank 0.1% / 0.1%."
+      },
+      "candidates": [
+        {
+          "id": "tauri",
+          "name": "Tauri",
+          "version": "2.11.5",
+          "color": "#24c8db",
+          "homepage": "https://tauri.app",
+          "statistics": {
+            "medianMs": 0.57,
+            "meanMs": 11.852,
+            "minMs": 0.008,
+            "maxMs": 35.489
+          },
+          "samplesMs": [
+            0.57,
+            34.837,
+            0.01,
+            0.575,
+            35.489,
+            0.008,
+            0.566,
+            34.959,
+            0.009,
+            0.567,
+            34.88,
+            0.012,
+            0.619,
+            34.665,
+            0.009
+          ],
+          "metrics": {
+            "table-frame-p99": {
+              "value": 19.46,
+              "unit": "ms",
+              "label": "table: frame time p99"
+            },
+            "table-step-p50": {
+              "value": 0.58,
+              "unit": "ms",
+              "label": "table: main-thread step time, mean per frame"
+            },
+            "table-jank": {
+              "value": 0.23,
+              "unit": "%",
+              "label": "table: frames over 1.5x the refresh interval"
+            },
+            "particles-frame-p99": {
+              "value": 63.75,
+              "unit": "ms",
+              "label": "particles: frame time p99"
+            },
+            "particles-step-p50": {
+              "value": 34.966,
+              "unit": "ms",
+              "label": "particles: main-thread step time, mean per frame"
+            },
+            "particles-jank": {
+              "value": 94.03,
+              "unit": "%",
+              "label": "particles: frames over 1.5x the refresh interval"
+            },
+            "raster-frame-p99": {
+              "value": 18.76,
+              "unit": "ms",
+              "label": "raster: frame time p99"
+            },
+            "raster-step-p50": {
+              "value": 0.01,
+              "unit": "ms",
+              "label": "raster: main-thread step time, mean per frame"
+            },
+            "raster-jank": {
+              "value": 0.1,
+              "unit": "%",
+              "label": "raster: frames over 1.5x the refresh interval"
+            },
+            "refresh": {
+              "value": 57,
+              "unit": "Hz",
+              "label": "Display refresh detected by the webview"
+            }
+          }
+        },
+        {
+          "id": "electron",
+          "name": "Electron",
+          "version": "44.3.0",
+          "color": "#9feaf9",
+          "homepage": "https://www.electronjs.org",
+          "statistics": {
+            "medianMs": 0.52,
+            "meanMs": 16.98,
+            "minMs": 0.008,
+            "maxMs": 51.048
+          },
+          "samplesMs": [
+            0.517,
+            50.929,
+            0.008,
+            0.519,
+            50.492,
+            0.012,
+            0.523,
+            51.048,
+            0.011,
+            0.522,
+            49.318,
+            0.011,
+            0.52,
+            50.27,
+            0.009
+          ],
+          "metrics": {
+            "table-frame-p99": {
+              "value": 19.04,
+              "unit": "ms",
+              "label": "table: frame time p99"
+            },
+            "table-step-p50": {
+              "value": 0.52,
+              "unit": "ms",
+              "label": "table: main-thread step time, mean per frame"
+            },
+            "table-jank": {
+              "value": 0.2,
+              "unit": "%",
+              "label": "table: frames over 1.5x the refresh interval"
+            },
+            "particles-frame-p99": {
+              "value": 81.5,
+              "unit": "ms",
+              "label": "particles: frame time p99"
+            },
+            "particles-step-p50": {
+              "value": 50.411,
+              "unit": "ms",
+              "label": "particles: main-thread step time, mean per frame"
+            },
+            "particles-jank": {
+              "value": 97.93,
+              "unit": "%",
+              "label": "particles: frames over 1.5x the refresh interval"
+            },
+            "raster-frame-p99": {
+              "value": 18.82,
+              "unit": "ms",
+              "label": "raster: frame time p99"
+            },
+            "raster-step-p50": {
+              "value": 0.01,
+              "unit": "ms",
+              "label": "raster: main-thread step time, mean per frame"
+            },
+            "raster-jank": {
+              "value": 0.1,
+              "unit": "%",
+              "label": "raster: frames over 1.5x the refresh interval"
+            },
+            "refresh": {
+              "value": 56,
+              "unit": "Hz",
+              "label": "Display refresh detected by the webview"
+            }
+          }
+        }
+      ],
+      "tests": [
+        {
+          "id": "table-frame-p99",
+          "title": "Table frame p99",
+          "description": "99th percentile interval between animation frames during the table test, mean over passes.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 19.46
+            },
+            {
+              "candidateId": "electron",
+              "value": 19.04
+            }
+          ]
+        },
+        {
+          "id": "table-step-p50",
+          "title": "Table step time",
+          "description": "Mean main-thread time inside the table test's per-frame step, which vsync cannot hide; a mean because WKWebView reports time in whole milliseconds.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 0.58
+            },
+            {
+              "candidateId": "electron",
+              "value": 0.52
+            }
+          ]
+        },
+        {
+          "id": "particles-frame-p99",
+          "title": "Particles frame p99",
+          "description": "99th percentile interval between animation frames during the particles test, mean over passes.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 63.75
+            },
+            {
+              "candidateId": "electron",
+              "value": 81.5
+            }
+          ]
+        },
+        {
+          "id": "particles-step-p50",
+          "title": "Particles step time",
+          "description": "Mean main-thread time inside the particles test's per-frame step, which vsync cannot hide; a mean because WKWebView reports time in whole milliseconds.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 34.966
+            },
+            {
+              "candidateId": "electron",
+              "value": 50.411
+            }
+          ]
+        },
+        {
+          "id": "raster-frame-p99",
+          "title": "Raster frame p99",
+          "description": "99th percentile interval between animation frames during the raster test, mean over passes.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 18.76
+            },
+            {
+              "candidateId": "electron",
+              "value": 18.82
+            }
+          ]
+        },
+        {
+          "id": "raster-step-p50",
+          "title": "Raster step time",
+          "description": "Mean main-thread time inside the raster test's per-frame step, which vsync cannot hide; a mean because WKWebView reports time in whole milliseconds.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 0.01
+            },
+            {
+              "candidateId": "electron",
+              "value": 0.01
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lifecycle",
+      "title": "Lifecycle",
+      "deck": "Cold start WITHOUT a cache purge (purge unavailable on this rig): from the launch command to the frontend's first animation frame, on one wall clock, 20 launches each. Warm start immediately after a prior launch, 10 each. Then a 10-minute soak cycling the three parity tests with a 1 MB round trip every 5 s, footprint sampled every second, 3 soaks each.",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "verdict": {
+        "winnerId": "electron",
+        "headline": "Electron reached its first frame in 192 ms cold (mean) to Tauri's 356; over ten minutes of work Tauri averaged 231.5 MB to 240.8 MB",
+        "summary": "Warm start medians: Tauri 353 ms, Electron 192 ms. Footprint at soak start / mean / peak, averaged over soaks: Tauri 420.2 / 231.5 / 425.6 MB; Electron 415 / 240.8 / 433.3 MB. Footprint swings with the segment, around a third as much during the table as during the particles, so the mean is the figure to quote. Windows: private working set (Win32_PerfFormattedData_PerfProc_Process.WorkingSetPrivate) summed over the app process and every descendant by parent process id, which includes msedgewebview2.exe for the Tauri candidate and every Electron helper for the Electron candidate."
+      },
+      "candidates": [
+        {
+          "id": "tauri",
+          "name": "Tauri",
+          "version": "2.11.5",
+          "color": "#24c8db",
+          "homepage": "https://tauri.app",
+          "statistics": {
+            "medianMs": 353.349,
+            "meanMs": 355.584,
+            "minMs": 347.559,
+            "maxMs": 376.12
+          },
+          "samplesMs": [
+            350.381,
+            354.47,
+            351.945,
+            354.41,
+            354.444,
+            352.099,
+            349.239,
+            352.287,
+            348.461,
+            350.672,
+            370.389,
+            376.12,
+            367.743,
+            351.486,
+            347.559,
+            357.028,
+            356.126,
+            349.375,
+            362.035,
+            355.406
+          ],
+          "metrics": {
+            "warm-median": {
+              "value": 352.9,
+              "unit": "ms",
+              "label": "Warm start median"
+            },
+            "host-to-first-frame": {
+              "value": 342.1,
+              "unit": "ms",
+              "label": "Host process start to first frame, median (excludes launcher latency)"
+            },
+            "soak-start": {
+              "value": 420.2,
+              "unit": "MB",
+              "label": "Footprint at soak start"
+            },
+            "soak-mean": {
+              "value": 231.5,
+              "unit": "MB",
+              "label": "Footprint, mean over the soak"
+            },
+            "soak-peak": {
+              "value": 425.6,
+              "unit": "MB",
+              "label": "Footprint peak during soak"
+            }
+          }
+        },
+        {
+          "id": "electron",
+          "name": "Electron",
+          "version": "44.3.0",
+          "color": "#9feaf9",
+          "homepage": "https://www.electronjs.org",
+          "statistics": {
+            "medianMs": 192,
+            "meanMs": 192.15,
+            "minMs": 186,
+            "maxMs": 199
+          },
+          "samplesMs": [
+            191,
+            191,
+            192,
+            193,
+            190,
+            195,
+            197,
+            193,
+            192,
+            199,
+            192,
+            192,
+            194,
+            186,
+            188,
+            193,
+            194,
+            190,
+            190,
+            191
+          ],
+          "metrics": {
+            "warm-median": {
+              "value": 192,
+              "unit": "ms",
+              "label": "Warm start median"
+            },
+            "host-to-first-frame": {
+              "value": 137.6,
+              "unit": "ms",
+              "label": "Host process start to first frame, median (excludes launcher latency)"
+            },
+            "soak-start": {
+              "value": 415,
+              "unit": "MB",
+              "label": "Footprint at soak start"
+            },
+            "soak-mean": {
+              "value": 240.8,
+              "unit": "MB",
+              "label": "Footprint, mean over the soak"
+            },
+            "soak-peak": {
+              "value": 433.3,
+              "unit": "MB",
+              "label": "Footprint peak during soak"
+            }
+          }
+        }
+      ],
+      "tests": [
+        {
+          "id": "cold",
+          "title": "Cold start",
+          "description": "Launch command to first animation frame WITHOUT a cache purge (purge unavailable on this rig), median of 20.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 353.3
+            },
+            {
+              "candidateId": "electron",
+              "value": 192
+            }
+          ]
+        },
+        {
+          "id": "warm",
+          "title": "Warm start",
+          "description": "Same measurement immediately after a prior launch, median of 10.",
+          "unit": "ms",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 352.9
+            },
+            {
+              "candidateId": "electron",
+              "value": 192
+            }
+          ]
+        },
+        {
+          "id": "soak-mean",
+          "title": "Footprint over soak",
+          "description": "Attributed memory averaged over the ten-minute soak, after the first five seconds, averaged over soaks.",
+          "unit": "MB",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 231.5
+            },
+            {
+              "candidateId": "electron",
+              "value": 240.8
+            }
+          ]
+        },
+        {
+          "id": "soak-peak",
+          "title": "Footprint peak",
+          "description": "Highest attributed memory sampled during the soak, mean over soaks.",
+          "unit": "MB",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 425.6
+            },
+            {
+              "candidateId": "electron",
+              "value": 433.3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "size",
+      "title": "Size",
+      "deck": "The installer each shell's default build produced, unsigned, and the bytes on disk once installed. Nothing tuned on either side.",
+      "unit": "MB",
+      "lowerIsBetter": true,
+      "verdict": {
+        "winnerId": "tauri",
+        "headline": "Tauri's installer is 1.8 MB to Electron's 106.1 MB",
+        "summary": "Installed: Tauri 1302 MB, Electron 367.5 MB. The Tauri candidate draws on the operating system's webview, which is not counted; the Electron candidate carries its own Chromium, which is."
+      },
+      "candidates": [
+        {
+          "id": "tauri",
+          "name": "Tauri",
+          "version": "2.11.5",
+          "color": "#24c8db",
+          "homepage": "https://tauri.app",
+          "statistics": {
+            "medianMs": 1.756,
+            "meanMs": 1.756,
+            "minMs": 1.756,
+            "maxMs": 1.756
+          },
+          "samplesMs": [
+            1.756
+          ],
+          "metrics": {
+            "installer": {
+              "value": 1.8,
+              "unit": "MB",
+              "label": "Installer as built"
+            },
+            "installed": {
+              "value": 1302,
+              "unit": "MB",
+              "label": "Installed on disk"
+            }
+          }
+        },
+        {
+          "id": "electron",
+          "name": "Electron",
+          "version": "44.3.0",
+          "color": "#9feaf9",
+          "homepage": "https://www.electronjs.org",
+          "statistics": {
+            "medianMs": 106.11,
+            "meanMs": 106.11,
+            "minMs": 106.11,
+            "maxMs": 106.11
+          },
+          "samplesMs": [
+            106.11
+          ],
+          "metrics": {
+            "installer": {
+              "value": 106.1,
+              "unit": "MB",
+              "label": "Installer as built"
+            },
+            "installed": {
+              "value": 367.5,
+              "unit": "MB",
+              "label": "Installed on disk"
+            }
+          }
+        }
+      ],
+      "tests": [
+        {
+          "id": "installer",
+          "title": "Installer",
+          "description": "Bytes of the default build's installer.",
+          "unit": "MB",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 1.8
+            },
+            {
+              "candidateId": "electron",
+              "value": 106.1
+            }
+          ]
+        },
+        {
+          "id": "installed",
+          "title": "Installed",
+          "description": "Bytes on disk after install and first launch.",
+          "unit": "MB",
+          "lowerIsBetter": true,
+          "results": [
+            {
+              "candidateId": "tauri",
+              "value": 1302
+            },
+            {
+              "candidateId": "electron",
+              "value": 367.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
