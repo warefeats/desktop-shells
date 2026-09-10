@@ -80,6 +80,18 @@ async function runMode(c: Candidate, mode: string, params: Record<string, unknow
   return { report, spawnToFirstFrameMs: Number(m[1]) - launched.spawnedAtMs, hostToFirstFrameMs: Number(m[2]) };
 }
 
+/** A pass that hangs (a covered window stops animation frames) is discarded and retried, bounded. */
+async function attempt<T>(what: string, fn: () => Promise<T>, tries = 3): Promise<T> {
+  for (let i = 1; ; i++) {
+    try { return await fn(); } catch (e) {
+      if (i >= tries || !String(e).includes("did not exit")) throw e;
+      results.notes.push(`${what}: attempt ${i} hung and was discarded`);
+      log(`${what}: hung, retrying (${i}/${tries})`);
+      save();
+    }
+  }
+}
+
 /** Interleave: for pass in passes, for each candidate in alternating order. */
 function* interleaved(passes: number): Generator<[number, Candidate]> {
   for (let p = 0; p < passes; p++) {
@@ -157,7 +169,7 @@ async function main() {
     for (const [p, c] of interleaved(PROTOCOL.ipcPasses)) {
       if (results.ipc[c.id].length > p) continue;
       await sleep(PROTOCOL.settleMs);
-      const r = await runMode(c, "ipc", { warmups: PROTOCOL.ipcWarmups, iterations: PROTOCOL.ipcIterations, pushRate: PROTOCOL.pushRate, pushSize: PROTOCOL.pushSize, pushSeconds: PROTOCOL.pushSeconds });
+      const r = await attempt(`ipc ${p} ${c.id}`, () => runMode(c, "ipc", { warmups: PROTOCOL.ipcWarmups, iterations: PROTOCOL.ipcIterations, pushRate: PROTOCOL.pushRate, pushSize: PROTOCOL.pushSize, pushSeconds: PROTOCOL.pushSeconds }));
       results.ipc[c.id].push({ pass: p, ...(r.report.result as object) });
       const cells = (r.report.result as { cells: Array<{ path: string; targetBytes: number; summary: { p50: number } }> }).cells;
       log(`ipc ${p} ${c.id}: ${cells.map((x) => `${x.path[0]}${x.targetBytes / 1024}k=${x.summary.p50.toFixed(2)}`).join(" ")}`);
@@ -170,7 +182,7 @@ async function main() {
     for (const [p, c] of interleaved(PROTOCOL.parityPasses)) {
       if (results.parity[c.id].length > p) continue;
       await sleep(PROTOCOL.settleMs);
-      const r = await runMode(c, "parity", { warmupFrames: PROTOCOL.parityWarmupFrames, frames: PROTOCOL.parityFrames });
+      const r = await attempt(`parity ${p} ${c.id}`, () => runMode(c, "parity", { warmupFrames: PROTOCOL.parityWarmupFrames, frames: PROTOCOL.parityFrames }));
       results.parity[c.id].push({ pass: p, ...(r.report.result as object) });
       const t = (r.report.result as { results: Array<{ test: string; summary: { p50: number; p99: number }; stepMs: { p50: number } }> }).results;
       log(`parity ${p} ${c.id}: ${t.map((x) => `${x.test} p50=${x.summary.p50.toFixed(1)} p99=${x.summary.p99.toFixed(1)} step=${x.stepMs.p50.toFixed(2)}`).join(" | ")}`);
