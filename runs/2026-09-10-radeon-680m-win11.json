@@ -32,8 +32,8 @@
       "lowerIsBetter": true,
       "verdict": {
         "winnerId": "electron",
-        "headline": "Electron moved JSON across the boundary 1.81 times faster than Tauri over 1 KB, 64 KB, 1 MB, 16 MB (geometric mean of medians)",
-        "summary": "Per size, Tauri over Electron: 1 KB 6x, 64 KB 1.65x, 1 MB 1.25x, 16 MB 0.87x. Raw bytes: 1 KB 8.15x, 64 KB 4.8x, 1 MB 5.67x, 16 MB 5.52x."
+        "headline": "Electron moved JSON across the boundary 1.81 times faster than Tauri over 1 KB, 64 KB, 1 MB and 16 MB (geometric mean of medians)",
+        "summary": "Size by size, Tauri over Electron: 1 KB 5.9x slower, 64 KB 1.6x slower, 1 MB 1.2x slower, 16 MB 1.1x faster. The raw bytes path is the finding on this machine: WebView2 hands 16 MB back in 377 ms where Electron takes 65, about five times slower, and the Mac's WKWebView does the same job in 9. Same Rust host. I didn't chase why; that's a Tauri-on-Windows question, and it's the one to ask before you pick a shell for a data-heavy app. Push held its rate on both."
       },
       "candidates": [
         {
@@ -775,8 +775,8 @@
       "lowerIsBetter": true,
       "verdict": {
         "winnerId": "tauri",
-        "headline": "Tauri's webview spent 11.85 ms of main-thread time per frame to 16.98 ms, pooled over table, particles and raster",
-        "summary": "table: frame p99 Tauri 19.5 / Electron 19 ms, step p50 0.58 / 0.52 ms, jank 0.2% / 0.2%. particles: frame p99 Tauri 63.8 / Electron 81.5 ms, step p50 34.97 / 50.41 ms, jank 94% / 97.9%. raster: frame p99 Tauri 18.8 / Electron 18.8 ms, step p50 0.01 / 0.01 ms, jank 0.1% / 0.1%."
+        "headline": "WebView2 spent 11.9 ms of main-thread time per frame to Chromium's 17.0, pooled over table, particles and raster",
+        "summary": "Again the particles: this integrated Radeon box is slower everywhere, and Chromium's frame p99 on the particles is 88 ms to WebView2's 63. The table and the raster are within a frame on both. Vsync is 59 Hz here, so read the tail and the step time, not the mean."
       },
       "candidates": [
         {
@@ -1057,8 +1057,8 @@
       "lowerIsBetter": true,
       "verdict": {
         "winnerId": "electron",
-        "headline": "Electron reached its first frame in 192 ms cold (mean) to Tauri's 356; over ten minutes of work Tauri averaged 231.5 MB to 240.8 MB",
-        "summary": "Warm start medians: Tauri 353 ms, Electron 192 ms. Footprint at soak start / mean / peak, averaged over soaks: Tauri 420.2 / 231.5 / 425.6 MB; Electron 415 / 240.8 / 433.3 MB. Footprint swings with the segment, around a third as much during the table as during the particles, so the mean is the figure to quote. Windows: private working set (Win32_PerfFormattedData_PerfProc_Process.WorkingSetPrivate) summed over the app process and every descendant by parent process id, which includes msedgewebview2.exe for the Tauri candidate and every Electron helper for the Electron candidate."
+        "headline": "Electron reached its first frame in 192 ms to Tauri's 356; over ten minutes of work Tauri averaged 232 MB to Electron's 241",
+        "summary": "Both start rows are warm: I had no way to purge the file cache on this rig, so 'cold' here is a launch after a settle, and the gap is Electron's process already being warm in the way that matters. Memory is a near tie by private working set over the process tree, which on Windows does include WebView2's processes as children. No 2 GB excursions here; WebView2's content process behaved."
       },
       "candidates": [
         {
@@ -1265,8 +1265,8 @@
       "lowerIsBetter": true,
       "verdict": {
         "winnerId": "tauri",
-        "headline": "Tauri's installer is 1.8 MB to Electron's 106.1 MB",
-        "summary": "Installed: Tauri 1302 MB, Electron 367.5 MB. The Tauri candidate draws on the operating system's webview, which is not counted; the Electron candidate carries its own Chromium, which is."
+        "headline": "Tauri's installer is 1.8 MB to Electron's 106",
+        "summary": "Installed: 8 MB against 367. WebView2 ships with Windows 11 and isn't counted; Chromium ships with Electron and is."
       },
       "candidates": [
         {
@@ -1291,7 +1291,7 @@
               "label": "Installer as built"
             },
             "installed": {
-              "value": 1302,
+              "value": 8.3,
               "unit": "MB",
               "label": "Installed on disk"
             }
@@ -1353,7 +1353,7 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 1302
+              "value": 8.3
             },
             {
               "candidateId": "electron",
