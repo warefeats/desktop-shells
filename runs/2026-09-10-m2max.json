@@ -620,13 +620,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 0.206
+              "value": 0.206,
+              "samples": [
+                0.254,
+                0.202,
+                0.202,
+                0.202
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 0.086
+              "value": 0.086,
+              "samples": [
+                0.093,
+                0.086,
+                0.083,
+                0.086
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "idiomatic-65536",
@@ -637,13 +650,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 1.095
+              "value": 1.095,
+              "samples": [
+                1.281,
+                1.119,
+                1.071,
+                1.083
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 2.083
+              "value": 2.083,
+              "samples": [
+                2.2,
+                2.1,
+                2,
+                2.033
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "idiomatic-1048576",
@@ -654,13 +680,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 14.5
+              "value": 14.5,
+              "samples": [
+                17.667,
+                14.5,
+                14.5,
+                14.5
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 30.7
+              "value": 30.7,
+              "samples": [
+                33.2,
+                30.9,
+                30.1,
+                30.4
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "idiomatic-16777216",
@@ -671,13 +710,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 245
+              "value": 245,
+              "samples": [
+                280,
+                243,
+                241.5,
+                244
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 625.95
+              "value": 625.95,
+              "samples": [
+                639.55,
+                636.95,
+                618.55,
+                616.65
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "raw-1024",
@@ -688,13 +740,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 0.19
+              "value": 0.19,
+              "samples": [
+                0.223,
+                0.192,
+                0.185,
+                0.184
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 0.054
+              "value": 0.054,
+              "samples": [
+                0.058,
+                0.055,
+                0.05,
+                0.052
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "raw-65536",
@@ -705,13 +770,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 0.255
+              "value": 0.255,
+              "samples": [
+                0.321,
+                0.252,
+                0.248,
+                0.25
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 0.138
+              "value": 0.138,
+              "samples": [
+                0.175,
+                0.138,
+                0.126,
+                0.135
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "raw-1048576",
@@ -722,13 +800,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 0.82
+              "value": 0.82,
+              "samples": [
+                1.047,
+                0.8,
+                0.8,
+                0.81
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 1
+              "value": 1,
+              "samples": [
+                1.16,
+                0.97,
+                0.98,
+                1
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "raw-16777216",
@@ -739,13 +830,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 9.4
+              "value": 9.4,
+              "samples": [
+                10.75,
+                9.4,
+                9.2,
+                9.1
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 15.8
+              "value": 15.8,
+              "samples": [
+                15.45,
+                15.85,
+                15.75,
+                16
+              ]
             }
-          ]
+          ],
+          "statistic": "other"
         },
         {
           "id": "push-gap-p99",
@@ -756,13 +860,26 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 1.5
+              "value": 1.5,
+              "samples": [
+                2,
+                1.000000000007276,
+                1.000000000007276,
+                2
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 1.48
+              "value": 1.48,
+              "samples": [
+                1.5,
+                1.5,
+                1.4000000059604645,
+                1.5
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         }
       ]
     },
@@ -953,13 +1070,28 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 18
+              "value": 18,
+              "samples": [
+                18,
+                18,
+                18,
+                18,
+                18
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 17.68
+              "value": 17.68,
+              "samples": [
+                17.600000000000364,
+                17.700000000000276,
+                17.700000000000728,
+                17.700000000000276,
+                17.699999999999818
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "table-step-p50",
@@ -970,13 +1102,28 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 0.522
+              "value": 0.522,
+              "samples": [
+                0.4516666666666462,
+                0.5299999999999879,
+                0.479999999999975,
+                0.6850000000000205,
+                0.46166666666665984
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 0.363
+              "value": 0.363,
+              "samples": [
+                0.37050000016887985,
+                0.3316666673620542,
+                0.34749999990065894,
+                0.3956666664282481,
+                0.36783333311478295
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "particles-frame-p99",
@@ -987,13 +1134,28 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 22.4
+              "value": 22.4,
+              "samples": [
+                22,
+                22,
+                23,
+                23,
+                22.00999999999999
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 34.2
+              "value": 34.2,
+              "samples": [
+                33.80000000000291,
+                34.29999999999927,
+                34.30000000000291,
+                34.299999999999294,
+                34.29999999999927
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "particles-step-p50",
@@ -1004,13 +1166,28 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 9.736
+              "value": 9.736,
+              "samples": [
+                9.559999999999988,
+                9.48,
+                10.34333333333333,
+                9.581666666666834,
+                9.715000000000046
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 17.014
+              "value": 17.014,
+              "samples": [
+                17.060500000019868,
+                16.979666666785874,
+                16.896333333402872,
+                17.36316666637858,
+                16.768833332657813
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "raster-frame-p99",
@@ -1021,13 +1198,28 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 18
+              "value": 18,
+              "samples": [
+                18,
+                18,
+                18,
+                18,
+                18
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 17.66
+              "value": 17.66,
+              "samples": [
+                17.599999999998545,
+                17.700000000000728,
+                17.700000000000728,
+                17.700000000000728,
+                17.60100000000577
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "raster-step-p50",
@@ -1038,13 +1230,28 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 0.022
+              "value": 0.022,
+              "samples": [
+                0.021666666666684858,
+                0.016666666666630286,
+                0.023333333333315144,
+                0.016666666666660602,
+                0.030000000000030315
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 0.03
+              "value": 0.03,
+              "samples": [
+                0.033500000387430194,
+                0.029333333571751913,
+                0.025166666656732558,
+                0.035666666974624,
+                0.027000000178813936
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         }
       ]
     },
@@ -1195,13 +1402,58 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 1125.8
+              "value": 1125.8,
+              "samples": [
+                1163.263916015625,
+                1124.156982421875,
+                1199.91015625,
+                1312.18798828125,
+                1342.930908203125,
+                1100.590087890625,
+                1030.81396484375,
+                1028.03515625,
+                1097.56005859375,
+                1003.679931640625,
+                1040.968017578125,
+                1195.798095703125,
+                1091.77783203125,
+                1140.7080078125,
+                1109.8291015625,
+                1189.77099609375,
+                948.39892578125,
+                1216.7919921875,
+                1127.39990234375,
+                1203.343017578125
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 1070
+              "value": 1070,
+              "samples": [
+                1078,
+                1172,
+                1150,
+                1197,
+                1156,
+                1150,
+                992,
+                1024,
+                1040,
+                1053,
+                1031,
+                1062,
+                1049,
+                1304,
+                1022,
+                1051,
+                1047,
+                1089,
+                1165,
+                1154
+              ]
             }
-          ]
+          ],
+          "statistic": "median"
         },
         {
           "id": "warm",
@@ -1212,13 +1464,38 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 306.3
+              "value": 306.3,
+              "samples": [
+                324.93701171875,
+                305.927001953125,
+                306.346923828125,
+                313.532958984375,
+                306.183837890625,
+                301.81494140625,
+                313.995849609375,
+                299.3818359375,
+                295.875,
+                338.589111328125
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 310
+              "value": 310,
+              "samples": [
+                339,
+                342,
+                310,
+                326,
+                310,
+                310,
+                309,
+                310,
+                309,
+                310
+              ]
             }
-          ]
+          ],
+          "statistic": "median"
         },
         {
           "id": "soak-mean",
@@ -1229,13 +1506,24 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 560.5
+              "value": 560.5,
+              "samples": [
+                392.7231227089377,
+                389.25292787031697,
+                899.3748772857386
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 349.1
+              "value": 349.1,
+              "samples": [
+                354.98893971761066,
+                352.58434628519774,
+                339.74037122635957
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "soak-peak",
@@ -1246,13 +1534,24 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 1479.1
+              "value": 1479.1,
+              "samples": [
+                829.2873382568359,
+                1158.5378875732422,
+                2449.4502716064453
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 544.8
+              "value": 544.8,
+              "samples": [
+                552.661262512207,
+                544.4738311767578,
+                537.3643188476562
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         }
       ]
     },
@@ -1335,13 +1634,20 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 2.5
+              "value": 2.5,
+              "samples": [
+                2.5
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 121.4
+              "value": 121.4,
+              "samples": [
+                121.4
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         },
         {
           "id": "installed",
@@ -1352,13 +1658,20 @@
           "results": [
             {
               "candidateId": "tauri",
-              "value": 10.4
+              "value": 10.4,
+              "samples": [
+                10.4
+              ]
             },
             {
               "candidateId": "electron",
-              "value": 286.1
+              "value": 286.1,
+              "samples": [
+                286.1
+              ]
             }
-          ]
+          ],
+          "statistic": "mean"
         }
       ]
     }

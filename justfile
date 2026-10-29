@@ -34,6 +34,10 @@ bench *ARGS:
 import LABEL RESULTS="results.json":
     bun run src/import.ts --results={{RESULTS}} --label="{{LABEL}}"
 
+# Add each test's statistic and per-pass samples to a run file published before it carried them, rebuilt from its results file; every value must match, and benchmark.json is left alone.
+enrich RUN RESULTS="results.json":
+    bun run src/enrich.ts --run={{RUN}} --results={{RESULTS}}
+
 # Rig: push the repo to the Windows box (builds happen there), run in the interactive session, pull results back.
 rig-push:
     #!/usr/bin/env bash
