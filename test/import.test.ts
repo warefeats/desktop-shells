@@ -93,7 +93,9 @@ describe("buildRun", () => {
     expect(Object.keys(t)).toEqual(["id", "title", "description", "unit", "lowerIsBetter", "results", "statistic"]);
     expect(Object.keys(t.results[0])).toEqual(["candidateId", "value", "samples"]);
   });
-  test("says what the step time and the protocol's warmups are", () => {
+  test("says what the IPC median, the step time and the protocol's warmups are", () => {
+    expect(testOf(run, "ipc", "idiomatic-1048576").description).toContain("the median pooled over every batch sample of every pass");
+    expect(testOf(run, "ipc", "raw-1048576").description).toContain("the median pooled over every batch sample of every pass");
     expect(testOf(run, "parity", "table-step-p50").description).toContain("a mean of means and not a p50 despite the id");
     expect(run.protocol.processModel).toContain("count samples in a cell, not passes");
   });
